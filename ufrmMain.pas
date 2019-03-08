@@ -94,6 +94,8 @@ pImportDesc:= ImageDirectoryEntryToData(Pointer(hmodCaller), TRUE,IMAGE_DIRECTOR
        {$ENDIF}
        written:=0;
        WriteProcessMemory(GetCurrentProcess, ppfn, @pfnNew, sizeof(pfnNew), Written);
+       //the below would probably work if we are in the same exe ... thus avoiding VirtualProtectEx+WriteProcessMemory
+       //ppfn^ :=  Cardinal(pfnNew);
        if written<>0 then result:=true;
        exit;
       end;
@@ -130,6 +132,8 @@ try
  ZeroMemory(@me32,sizeof(MODULEENTRY32));
  me32.dwSize:=sizeof(MODULEENTRY32);
  Module32First(hSnapShot,me32);
+ //we are going thru all loaded modules although the main module might be enough
+ //i.e GetModuleHandle(nil)
 repeat
   if RedirectIAT(pchar(dll),hfunc,new,me32.hModule)
     then Form1.ListBox1.Items.Add(strpas(me32.szmodule)+':'+inttohex(integer(me32.modBaseAddr),4)+ ' TRUE')
