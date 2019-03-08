@@ -1,0 +1,9 @@
+*.compiled
+*.o
+*.a
+*.obj
+*.exe
+*.or
+lib
+*.~*
+*.ppu
